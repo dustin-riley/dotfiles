@@ -69,6 +69,19 @@ if [ "$OS" = "Darwin" ]; then
     PACKAGES="$PACKAGES ghostty vscode"
 fi
 
+# Back up existing files that would conflict with stow symlinks
+# (e.g. .zshrc and .zprofile created by the devcontainer base image)
+for pkg in $PACKAGES; do
+    for f in "$DOTFILES/$pkg"/.*; do
+        [ -e "$f" ] || continue
+        target="$HOME/$(basename "$f")"
+        if [ -f "$target" ] && [ ! -L "$target" ]; then
+            info "Backing up $target to $target.bak"
+            mv "$target" "$target.bak"
+        fi
+    done
+done
+
 info "Stowing dotfiles ($PACKAGES)..."
 cd "$DOTFILES"
 stow -t ~ $PACKAGES
