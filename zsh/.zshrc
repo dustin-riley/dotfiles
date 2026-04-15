@@ -10,6 +10,10 @@ plugins=(git z brew copypath macos npm sudo zsh-autosuggestions zsh-syntax-highl
 
 source $ZSH/oh-my-zsh.sh
 
+# Disable meta-sends-escape (mode 1034) over SSH — fixes double-character
+# rendering in Ghostty when TERM=xterm-ghostty on the remote.
+[[ -n "$SSH_TTY" ]] && printf '\e[?1034l'
+
 export EDITOR='vim'
 
 export NVM_DIR="$HOME/.nvm"
