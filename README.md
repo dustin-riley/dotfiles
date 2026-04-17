@@ -28,6 +28,7 @@ If a real file already exists where a symlink needs to go (common on devcontaine
 | `git`      | Git identity + global gitignore                    | `~/.config/git/config`, `~/.config/git/ignore`                | all      |
 | `ghostty`  | Terminal config (theme, padding, cursor, keys)     | `~/Library/Application Support/com.mitchellh.ghostty/config`  | macOS    |
 | `vscode`   | Editor settings (formatting, TS, exclusions)       | `~/Library/Application Support/Code/User/settings.json`       | macOS    |
+| `zellij`   | Terminal multiplexer config (keybinds, kitty kbd)  | `~/.config/zellij/config.kdl`                                 | all      |
 | `zsh`      | Shell config (Oh My Zsh, plugins, PATH, NVM)       | `~/.zshrc`, `~/.zprofile`                                     | all      |
 
 Linux installs omit `ghostty` and `vscode` (macOS-only targets).
@@ -40,6 +41,7 @@ Linux installs omit `ghostty` and `vscode` (macOS-only targets).
 - **Enabled Claude plugins:** `frontend-design`, `code-review`, and `pup` (from the `datadog-labs/pup` marketplace). These are fetched by Claude Code itself, not by `install.sh`.
 - **VS Code** enables format-on-save with Prettier, auto-runs ESLint fixes and import organization on save, and turns on the experimental TypeScript Go server (`typescript.experimental.useTsgo`).
 - **Ghostty** uses the `Birds of Paradise` theme and binds `shift+enter` to send a literal escape+CR (useful for multi-line input in REPLs/TUIs that treat bare Enter as submit).
+- **Zellij** enables the Kitty keyboard protocol (`support_kitty_keyboard_protocol true`). Without it, Ghostty emits `ESC f` / `ESC b` for Option+Right/Left, which zellij would otherwise decode as `Alt+f` (ToggleFloatingPanes) instead of `Alt+Right` (MoveFocus).
 
 ## What `install.sh` actually does
 
@@ -104,7 +106,7 @@ The linked paths contain live credentials. EFS here is assumed to be private to 
 
 - **Edit a config:** edit the file in this repo (or edit the symlinked target — same thing) and commit.
 - **Add a new package:** create a top-level directory mirroring `$HOME`, add it to the `PACKAGES` list in `install.sh`, and re-run `install.sh`.
-- **Unstow everything:** `cd ~/dotfiles && stow -D -t ~ claude gh git zsh` (add `ghostty vscode` on macOS). Symlinks go away; your `.bak` files remain where you left them.
+- **Unstow everything:** `cd ~/dotfiles && stow -D -t ~ claude gh git zellij zsh` (add `ghostty vscode` on macOS). Symlinks go away; your `.bak` files remain where you left them.
 - **Check what's linked:** `ls -la ~ | grep dotfiles` shows which files in `$HOME` point back here.
 
 ## Repo layout
@@ -117,5 +119,6 @@ The linked paths contain live credentials. EFS here is assumed to be private to 
 ├── git/                    # git identity + global ignore
 ├── ghostty/                # Ghostty terminal (macOS)
 ├── vscode/                 # VS Code (macOS)
+├── zellij/                 # Zellij (terminal multiplexer)
 └── zsh/                    # zsh + Oh My Zsh
 ```
