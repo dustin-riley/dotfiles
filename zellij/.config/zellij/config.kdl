@@ -1,0 +1,5 @@
+// Enable the enhanced Kitty Keyboard Protocol so modifier keys (Alt/Option,
+// Shift, Ctrl) are encoded distinctly. This makes Alt+Arrow pane navigation
+// work in terminals like Ghostty without needing terminal-side Option-as-Alt
+// remapping.
+support_kitty_keyboard_protocol true

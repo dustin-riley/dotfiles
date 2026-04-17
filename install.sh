@@ -90,7 +90,7 @@ fi
 # Stow packages — only stow macOS-specific packages on Darwin
 PACKAGES="claude gh git zsh"
 if [ "$OS" = "Darwin" ]; then
-    PACKAGES="$PACKAGES ghostty vscode"
+    PACKAGES="$PACKAGES ghostty vscode zellij"
 fi
 
 # Back up existing files that would conflict with stow symlinks
