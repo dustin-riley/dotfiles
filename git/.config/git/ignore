@@ -1,1 +1,11 @@
+# Per-project Claude Code settings (may contain machine-specific permissions)
 **/.claude/settings.local.json
+
+# macOS metadata
+.DS_Store
+._*
+
+# Editor swap/backup files
+*.swp
+*.swo
+*~
