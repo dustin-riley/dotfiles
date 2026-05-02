@@ -37,5 +37,9 @@
         "*.gitpod.local": "linux",
         "*.gitpod.remote": "linux"
     },
-    "task.allowAutomaticTasks": "on"
+    "task.allowAutomaticTasks": "on",
+    "[astro]": {
+        "editor.defaultFormatter": "astro-build.astro-vscode"
+    },
+    "workbench.colorTheme": "Dark Modern"
 }
