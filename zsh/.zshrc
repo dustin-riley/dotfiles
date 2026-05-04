@@ -10,6 +10,12 @@ if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null; then
   export TERM=xterm-256color
 fi
 
+# Source Ona-injected secrets for non-login zsh sessions. Ona writes
+# user-configured secrets to /etc/profile.d/ona-secrets.sh, which is sourced
+# by /etc/profile for login shells only — agent subshells, nested zsh, and
+# VS Code's integrated terminal miss them otherwise. No-op on macOS.
+[ -f /etc/profile.d/ona-secrets.sh ] && . /etc/profile.d/ona-secrets.sh
+
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="agnoster"
