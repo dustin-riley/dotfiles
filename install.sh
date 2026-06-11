@@ -198,7 +198,7 @@ if [ -n "$EFS_DIR" ]; then
         ln -s "$dst" "$src"
     }
 
-    link_to_efs ".claude.json"              # Claude Code OAuth + API key
+    link_to_efs ".claude.json"              # Claude Code state (NOT auth — auth comes from CLAUDE_CODE_OAUTH_TOKEN ona secret; keep oauthAccount/primaryApiKey out of this file)
     link_to_efs ".claude/.credentials.json"  # Claude Code credentials
     link_to_efs ".config/gh/hosts.yml"       # GitHub CLI auth
     link_to_efs ".config/acli"               # Atlassian CLI non-secret config (site, email)
