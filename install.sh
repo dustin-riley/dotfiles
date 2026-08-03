@@ -198,8 +198,10 @@ if [ -n "$EFS_DIR" ]; then
         ln -s "$dst" "$src"
     }
 
-    link_to_efs ".claude.json"              # Claude Code OAuth + API key
-    link_to_efs ".claude/.credentials.json"  # Claude Code credentials
+    # Claude Code auth (~/.claude.json, ~/.claude/.credentials.json) is
+    # deliberately NOT linked. The tokens are short-lived and refreshed
+    # in-process, so the EFS copy goes stale and a fresh instance ends up
+    # logged out anyway. Just run `claude` and log in once per instance.
     link_to_efs ".config/gh/hosts.yml"       # GitHub CLI auth
     link_to_efs ".config/acli"               # Atlassian CLI non-secret config (site, email)
     link_to_efs ".aws"                       # AWS config

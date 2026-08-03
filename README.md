@@ -75,7 +75,7 @@ Read the script — it's ~270 lines and stays small deliberately. But since it m
 
 ### Auto-bootstrapping a new instance
 
-Ona has a **dotfiles repo** setting (under user settings → dotfiles). Point it at this repo and Ona will clone it and run `install.sh` automatically on every new instance. Combined with the EFS persistence below, a fresh instance comes up fully configured with credentials intact — no manual steps.
+Ona has a **dotfiles repo** setting (under user settings → dotfiles). Point it at this repo and Ona will clone it and run `install.sh` automatically on every new instance. Combined with the EFS persistence below, a fresh instance comes up fully configured with most credentials intact. The exceptions are Claude Code (log in once per instance — see [Claude Code auth](#claude-code-auth)) and ACLI (auto-re-authed from a token — see [ACLI auth](#acli-auth)).
 
 ### EFS persistence
 
@@ -89,8 +89,6 @@ Cloud devcontainers are ephemeral — credentials wiped on every new instance is
 
 | Path                           | Why                                       |
 | ------------------------------ | ----------------------------------------- |
-| `~/.claude.json`               | Claude Code OAuth token + API key         |
-| `~/.claude/.credentials.json`  | Claude Code credentials                   |
 | `~/.config/gh/hosts.yml`       | GitHub CLI auth                           |
 | `~/.config/acli`               | Atlassian CLI non-secret config (site, email) — token lives in the OS keyring, see [ACLI auth](#acli-auth) |
 | `~/.aws`                       | AWS SDK config + credentials              |
@@ -103,6 +101,14 @@ Cloud devcontainers are ephemeral — credentials wiped on every new instance is
 ### Security note
 
 The linked paths contain live credentials. EFS here is assumed to be private to your user account. Don't point `EFS_MOUNT_POINT` at anything shared with other humans.
+
+### Claude Code auth
+
+**Not persisted — log in once per instance.** `~/.claude.json` and `~/.claude/.credentials.json` used to be linked to EFS, and it didn't work: the OAuth access token is short-lived and refreshed in-process, so the copy sitting on EFS goes stale between instances and you land logged out anyway — with the added failure mode that a stale token gets written back over a good one. Linking them was strictly worse than not linking them, so those two paths were dropped from the list above.
+
+Run `claude` on a fresh instance and complete the login. Everything else under `~/.claude` (settings, plugins, statusline) comes from this repo via `stow claude`, so only the credentials are per-instance.
+
+If you have leftovers from the old behavior, delete the stale copies so nothing reads them: `rm -f "$EFS_MOUNT_POINT/.claude.json" "$EFS_MOUNT_POINT/.claude/.credentials.json"`.
 
 ### ACLI auth
 
