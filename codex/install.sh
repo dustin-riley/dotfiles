@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+CODEX_DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+CODEX_CONFIG_DIR="$HOME/.codex"
+CODEX_CONFIG_PATH="$CODEX_CONFIG_DIR/config.toml"
+CODEX_CONFIG_TEMPLATE="$CODEX_DOTFILES_DIR/config.toml"
+CODEX_CONFIG_TEMP="$(mktemp)"
+
+cleanup() {
+    rm -f "$CODEX_CONFIG_TEMP"
+}
+trap cleanup EXIT
+
+cp "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TEMP"
+
+if [ -f "$CODEX_CONFIG_PATH" ]; then
+    awk '
+        /^\[projects\./ || /^\[hooks\.state\./ {
+            preserve = 1
+            print ""
+            print
+            next
+        }
+        /^\[/ && !(/^\[projects\./ || /^\[hooks\.state\./) {
+            preserve = 0
+        }
+        preserve && NF { print }
+    ' "$CODEX_CONFIG_PATH" >> "$CODEX_CONFIG_TEMP"
+fi
+
+mkdir -p "$CODEX_CONFIG_DIR"
+chmod 600 "$CODEX_CONFIG_TEMP"
+mv "$CODEX_CONFIG_TEMP" "$CODEX_CONFIG_PATH"
+trap - EXIT
+
+printf '\033[32m[ ok ]\033[0m Codex config installed\n'

@@ -1,0 +1,39 @@
+model_context_window = 1050000
+approvals_reviewer = "auto_review"
+
+[features]
+hooks = true
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "git-branch", "pull-request-number", "branch-changes", "run-state", "permissions", "approval-mode", "context-used", "context-window-size", "fast-mode", "task-progress"]
+status_line_use_colors = true
+
+[otel]
+environment = "dev"
+log_user_prompt = false
+exporter = { otlp-http = { endpoint = "http://localhost:4318/v1/logs", protocol = "json" } }
+metrics_exporter = { otlp-http = { endpoint = "http://localhost:4318/v1/metrics", protocol = "binary" } }
+trace_exporter = "none"
+
+[mcp_servers.eslint]
+command = "npx"
+args = ["@eslint/mcp@latest"]
+startup_timeout_sec = 30
+enabled = false
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+startup_timeout_sec = 15
+enabled = false
+
+[mcp_servers.datetime]
+command = "npx"
+args = ["-y", "@odgrim/mcp-datetime"]
+enabled = false
+
+[mcp_servers.guru]
+command = "/workspaces/obsidian/scripts/ai-playground/src/guru-mcp-server-ts/run-guru-mcp-server.sh"
+args = []
+startup_timeout_sec = 15
+enabled = false

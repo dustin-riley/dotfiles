@@ -151,6 +151,8 @@ cd "$DOTFILES"
 stow -t ~ $PACKAGES
 ok "All packages stowed"
 
+"$DOTFILES/codex/install.sh"
+
 # Set zsh as default shell (Linux only — macOS ships with zsh as default).
 if [ "$OS" = "Linux" ]; then
     if [ "$(getent passwd "$(id -un)" | cut -d: -f7)" != "/usr/bin/zsh" ]; then
