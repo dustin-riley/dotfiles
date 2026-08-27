@@ -24,7 +24,7 @@ If a real file already exists where a symlink needs to go (common on devcontaine
 | Package    | Manages                                            | Target                                                        | Platform |
 | ---------- | -------------------------------------------------- | ------------------------------------------------------------- | -------- |
 | `claude`   | Claude Code settings (model, status line, plugins) | `~/.claude/settings.json`                                     | all      |
-| `codex`    | Codex user defaults and UI preferences            | `~/.codex/config.toml` (installed from a tracked template)    | all      |
+| `codex`    | Codex defaults, UI, and personal agent instructions | `~/.codex/config.toml`, `~/.codex/AGENTS.md`                  | all      |
 | `gh`       | GitHub CLI config (aliases, protocol, editor)      | `~/.config/gh/config.yml`                                     | all      |
 | `git`      | Git identity + global gitignore                    | `~/.config/git/config`, `~/.config/git/ignore`                | all      |
 | `ghostty`  | Terminal config (theme, padding, cursor, keys)     | `~/Library/Application Support/com.mitchellh.ghostty/config`  | macOS    |
@@ -39,7 +39,7 @@ Linux installs omit `ghostty` and `vscode` (macOS-only targets).
 - **Git identity is committed.** `git/.config/git/config` hard-codes `Dustin Riley` and a GitHub `noreply` email as the global identity. If you fork this, change it before running `install.sh` or your commits will be attributed to me.
 - **`gh` uses SSH**, not HTTPS. You'll need an SSH key registered with GitHub before `gh` clones/pushes work.
 - **Claude Code runs Opus by default** with `alwaysThinkingEnabled: true` and `skipDangerousModePermissionPrompt: true`. The latter disables the dangerous-mode confirmation prompt, which is fine in ephemeral cloud devcontainers but is a conscious trust tradeoff on a personal laptop. Review `claude/.claude/settings.json` and decide for yourself.
-- **Codex tracks only portable configuration.** `codex/install.sh` applies the tracked template while preserving trusted-project paths and hook trust hashes from the local config. Authentication, history, and sessions remain local under `~/.codex`.
+- **Codex tracks only portable configuration.** `codex/install.sh` applies the tracked config template while preserving trusted-project paths and hook trust hashes, and installs personal agent instructions from `codex/AGENTS.md`. Authentication, history, and sessions remain local under `~/.codex`.
 - **Enabled Claude plugins:** `frontend-design`, `code-review`, and `pup` (from the `datadog-labs/pup` marketplace). The plugins themselves are fetched by Claude Code; the `pup` binary they shell out to is installed by `install.sh` on Linux (see below).
 - **VS Code** enables format-on-save with Prettier, auto-runs ESLint fixes and import organization on save, and turns on the experimental TypeScript Go server (`typescript.experimental.useTsgo`).
 - **Ghostty** uses the `Birds of Paradise` theme and binds `shift+enter` to send a literal escape+CR (useful for multi-line input in REPLs/TUIs that treat bare Enter as submit). `macos-option-as-alt = left` remaps Left Option to Alt, leaving Right Option free for macOS special characters (∆, ˚, ¬). Option+Arrow is left on its default readline word-nav (`ESC b` / `ESC f`) so word-by-word cursor movement still works in shells/REPLs.
@@ -145,7 +145,7 @@ Entirely optional. If you don't use Ona or don't have a persistent mount, leave 
 
 ## Modifying and iterating
 
-- **Edit a config:** edit the file in this repo (or edit the symlinked target — same thing) and commit. For Codex, edit `codex/config.toml` and rerun `codex/install.sh`.
+- **Edit a config:** edit the file in this repo (or edit the symlinked target — same thing) and commit. For Codex, edit `codex/config.toml` or `codex/AGENTS.md`, then rerun `codex/install.sh`.
 - **Add a new package:** create a top-level directory mirroring `$HOME`, add it to the `PACKAGES` list in `install.sh`, and re-run `install.sh`.
 - **Unstow everything:** `cd ~/dotfiles && stow -D -t ~ claude gh git zellij zsh` (add `ghostty vscode` on macOS). Symlinks go away; your `.bak` files remain where you left them. Codex is installed from a template rather than stowed.
 - **Check what's linked:** `ls -la ~ | grep dotfiles` shows which files in `$HOME` point back here.
