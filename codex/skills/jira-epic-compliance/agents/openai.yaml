@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jira Epic Compliance"
+  short_description: "Make Jira epics hierarchy and rubric compliant"
+  default_prompt: "Use $jira-epic-compliance to review and fix these Jira epics one at a time."
