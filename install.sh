@@ -214,6 +214,24 @@ else
     skip "EFS_MOUNT_POINT not set (set it in Ona secrets to enable)"
 fi
 
+# Buildkite CLI auth — configure new Ona instances from the account secret.
+# The CLI is preinstalled in new Ona environments. Keep the token in Ona
+# secrets as BUILDKITE_API_TOKEN, never in this repository.
+if [ -n "${BUILDKITE_API_TOKEN:-}" ]; then
+    if command -v bk &>/dev/null; then
+        info "Configuring Buildkite CLI for VantaInc..."
+        if (cd "$HOME" && bk configure --org VantaInc --token "$BUILDKITE_API_TOKEN" --force) &>/dev/null; then
+            ok "Buildkite CLI authenticated"
+        else
+            info "Buildkite CLI auth failed — check BUILDKITE_API_TOKEN and its permissions"
+        fi
+    else
+        skip "Buildkite CLI not installed (included in new Ona environments)"
+    fi
+else
+    skip "BUILDKITE_API_TOKEN not set (set it in Ona secrets for auto-Buildkite-auth)"
+fi
+
 # Atlassian CLI auth — auto-authenticate using an API token.
 #
 # ACLI stores the OAuth/API token in the OS keyring (libsecret/DBus), which is
