@@ -30,7 +30,7 @@ If a real file already exists where a symlink needs to go (common on devcontaine
 | `ghostty`  | Terminal config (theme, padding, cursor, keys)     | `~/Library/Application Support/com.mitchellh.ghostty/config`  | macOS    |
 | `vscode`   | Editor settings (formatting, TS, exclusions)       | `~/Library/Application Support/Code/User/settings.json`       | macOS    |
 | `zellij`   | Terminal multiplexer config (keybinds, kitty kbd)  | `~/.config/zellij/config.kdl`                                 | all      |
-| `zsh`      | Shell config (Oh My Zsh, plugins, PATH, NVM)       | `~/.zshrc`, `~/.zprofile`                                     | all      |
+| `zsh`      | Shell config (Oh My Zsh, plugins, PATH, NVM)       | `~/.zshenv`, `~/.zshrc`, `~/.zprofile`                        | all      |
 
 Linux installs omit `ghostty` and `vscode` (macOS-only targets).
 
@@ -70,6 +70,7 @@ Read the script — it's ~270 lines and stays small deliberately. But since it m
 
 - **Zellij is installed unconditionally**, including on Ona instances. It's not wired into `.zshrc` as auto-start, so nothing changes unless you invoke `zellij`, but the binary will be on disk. If you don't want it, delete the Zellij block in `install.sh` before running.
 - **Conflicting dotfiles are renamed to `.bak`**, not deleted. If `~/.zshrc` exists as a regular file, it becomes `~/.zshrc.bak` and the stow symlink takes over. Re-running the installer won't overwrite an existing `.bak` — so if you re-bootstrap twice, the oldest backup is what sticks around.
+- **Ona environment loading:** `.zshenv` loads `/etc/profile.d/ona-secrets.sh` when readable, including for noninteractive agent commands. It also preserves Nix initialization when available. `.zshrc` handles interactive shell setup.
 - **`PATH` precedence** (from `zsh/.zshrc`): `~/.local/bin` → `~/bin` → `/opt/homebrew/opt/libpq/bin` → system. Anything you drop into `~/.local/bin` (including the Linux-installed Zellij) wins over Homebrew and system binaries.
 - **Ghostty terminfo fallback:** `.zshrc` falls back to `TERM=xterm-256color` (before `oh-my-zsh` loads) on hosts that don't have an `xterm-ghostty` terminfo entry. Without the fallback, `zsh-autosuggestions`/`zsh-syntax-highlighting` drive ZLE against an unknown terminal and every keystroke renders twice. Common on Ubuntu ≤ ncurses 6.4 (Ona, Gitpod, many Debian derivatives). No-op on hosts that *do* have the entry (recent macOS/Homebrew ncurses), so the full Ghostty capability set is preserved there.
 
